@@ -247,3 +247,18 @@ The following components are currently under development:
 # Acknowledgements
 
 This work was carried out as part of the Undergraduate Research Project (UGP) under **Prof. Tushar Sandhan**, Department of Electrical Engineering, IIT Kanpur.
+
+This work makes use of several outstanding open-source projects.
+
+- **VGGT**
+  - Paper: https://arxiv.org/abs/2503.11651
+  - Repository: https://github.com/facebookresearch/vggt
+
+- **Open3D**
+  - https://github.com/isl-org/Open3D
+
+- **PyMeshLab**
+  - https://github.com/cnr-isti-vclab/PyMeshLab
+
+- **OpenCV**
+  - https://opencv.org/
