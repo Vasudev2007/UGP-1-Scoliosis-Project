@@ -1,0 +1,14 @@
+# requirements.txt
+
+# Core scientific libraries
+numpy>=1.23.0,<2.0.0
+
+# 3D visualization and geometry processing
+open3d>=0.18.0
+
+# Optional: enhances compatibility and visualization backend stability
+matplotlib>=3.7.0
+pyqt5>=5.15.0   # some open3d versions need this for GUI backend (safe to include)
+
+# (Local file)
+# enhanced_point_picker.py should be in the same folder as this script
