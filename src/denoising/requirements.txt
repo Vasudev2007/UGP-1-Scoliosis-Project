@@ -1,0 +1,9 @@
+# Core dependencies (do NOT include stdlib modules)
+open3d>=0.18.0
+numpy>=1.23
+tqdm>=4.66.0
+
+# Optional (commented out)
+# faiss-gpu>=1.7.3
+
+# install torch for gpu acceleration. 

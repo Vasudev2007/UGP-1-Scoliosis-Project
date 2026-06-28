@@ -1,0 +1,10 @@
+# requirements.txt
+
+# Core scientific library
+numpy>=1.23.0,<2.0.0
+
+# PyMeshLab for mesh processing (wraps MeshLab filters)
+pymeshlab>=2023.12
+
+# Optional but recommended GUI dependencies for PyMeshLab and Tkinter stability
+pyqt5>=5.15.0

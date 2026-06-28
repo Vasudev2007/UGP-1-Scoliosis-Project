@@ -1,0 +1,6 @@
+# Core dependencies for glb_to_ply.py
+
+pymeshlab>=2022.2
+numpy>=1.21
+trimesh>=3.23
+open3d>=0.17
