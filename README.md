@@ -20,11 +20,35 @@ By leveraging a combination of Video-to-3D models (like VGGT) and specialized ge
 ---
 
 ## 🏗️ Pipeline Architecture
+This is the overview of the pipeline: 
 
-The pipeline is split into four primary stages:
+The pipeline is split into two phases and can be viewed as that.
+Phase-1: Video to mesh 
+Phase-2: mesh to AIX 
 
+Phase-1 has 3 parts and Phase-2 has two parts I am giving names to the two phases
+
+### Phase-1: 
+<img width="882" height="405" alt="image" src="https://github.com/user-attachments/assets/bcef242f-717a-4d1e-893c-7ea34e14cdd8" />
+This is the overall pipeline Architecutre for phase-1 
 ### Part 1: Pre-processing
+
+Input: Videos 
+Sample Input: 
+![Uploading image.png…]()
+
+**Video Shooting Technique**
+* The person is kept in **center** with respect to the background.
+* The size of the person in comparison to the background should be large for VGGT to reconstruct properly.
+* Camera is rotated in circle about the person while filming to gather all views for 3D Reconstruction until one complete circle is not made.
+* Here we have done the setup with tshirt-on. But same can be done with bare-back.
+  
 - **Workflow**: `Videos -> Frames -> Pre-processed Frames -> VGGT -> PLY Conversion -> Point Cloud`
+- Step-1: Videos to Frames:
+- 45 frames both for Near and Far video is chosen. This particular number ‘45’ is completely due to GPU Capabilities. 
+Higher the frames, higher the quality of mesh and higher the accuracy. 
+Produces very decent result in 30-45 frames.
+
 - Extracts frames from near and far videos.
 - Constructs initial 3D `.glb` models and converts them to `.ply` point clouds.
 
