@@ -70,8 +70,6 @@ Phase 2 comprises part 4 only.
   <img width="752" height="371" alt="image" src="https://github.com/user-attachments/assets/cd83cc84-8871-4e05-ad76-76ab1e274854" />
 </div>
 
-- Extracts frames from near and far videos.
-- Constructs initial 3D `.glb` models and converts them to `.ply` point clouds.
 
 **Step 2: Frames to 3D Point cloud**
 
@@ -80,8 +78,8 @@ Phase 2 comprises part 4 only.
 </div>
 
 **Key points:**
-We utilized VGGT for 3D reconstruction. We experimented with a lot of other open-source 3D reconstruction softwares which can be found in the experiments folder. We also checked for polycam reconstruction and colmap as well. 
-We experimented with VGGT’s confidence thresholds. We found the following settings via repetitive trials and errors to be the best: 
+* We utilized VGGT for 3D reconstruction. We experimented with a lot of other open-source 3D reconstruction softwares which can be found in the experiments folder. We also checked for polycam reconstruction and colmap as well. 
+* We experimented with VGGT’s confidence thresholds. We found the following settings via repetitive trials and errors to be the best: 
 * **Near Reconstruction:** 85 Confidence threshold
 * **Far Reconstruction:** 50 Confidence threshold (default) 
 
@@ -100,6 +98,9 @@ The output is in `.glb` format which is converted to `.ply` format using Python 
 <div align="center">
   <img width="746" height="395" alt="image" src="https://github.com/user-attachments/assets/a9f7b43f-f6e9-4605-bd63-879cecd5d7ef" />
 </div>
+
+
+**Step-1: Far Point Cloud denosing **  
 
 **Far Point Cloud Denoising:** 
 <div align="center">
@@ -137,24 +138,26 @@ Radius Outlier Removal removes points that have few neighbors in a given sphere 
   <img width="221" height="176" alt="image" src="https://github.com/user-attachments/assets/803fe063-cc9e-4076-8627-8c963cedd612" />
 </div>
 
-**For near mesh denoising:** 
-VGGT's internal confidence threshold setting was already giving good to use results, hence we didn't bother with denoising it much. I explored different denoising adaptive settings for that too. But our trials were done in a similar indoor environment so noise was of a single type. When we tried to do the same experiment in outdoor settings, the video contained other types of noise for which VGGT's internal setting and a fixed threshold can't help us anymore. Hence if anyone is working on this in the future, please use some denoising for near-mesh as well which is adaptive to the noise present in the point cloud (same SOR and ROR denoising was found ineffective for near mesh). 
+** Step-2: Near Point Cloud denoising:** 
+*VGGT's internal confidence threshold setting was already giving good to use results, hence we didn't bother with denoising it much. But our trials were done in a similar indoor environment so noise was of a single type. When we tried to do the same experiment in outdoor settings, the video contained other types of noise for which VGGT's internal setting and a fixed threshold can't help us anymore.
+*We explored different denoising using adaptive settings .  Hence if anyone is working on this in the future, please use some denoising for near-mesh as well which is adaptive to the noise present in the point cloud (same SOR and ROR denoising was found ineffective for near mesh). 
 
 - **Far Mesh**: Handles heavily noisy data via SOR-ROR denoising before creating the mesh using MeshLab algorithms.
 - **Near Mesh**: Optional denoising is applied, followed by mesh formation and mesh post-processing.
 
-**Mesh reconstruction:**
+**Step-2: Mesh reconstruction:**
 <div align="center">
   <img width="870" height="441" alt="image" src="https://github.com/user-attachments/assets/a9f8ecee-c7e8-42d5-9382-183cf4daf7c2" />
 </div>
 
-For mesh reconstruction we utilized meshlab (or equivalently in Python `pymeshlab` which is an excellent open-source implementation). We tried other mesh reconstruction softwares and libraries such as Trimesh but we didn't explore it much as meshlab did our work. 
+*For mesh reconstruction we utilized meshlab (or equivalently in Python `pymeshlab` which is an excellent open-source implementation). We tried other mesh reconstruction softwares and libraries such as Trimesh but we didn't explore it much as meshlab did our work. 
 
 <div align="center">
   <img width="841" height="457" alt="image" src="https://github.com/user-attachments/assets/6303f04c-3aba-4bb8-9842-fa6f9e98eb25" />
 </div>
 
 ---
+
 
 #### Part 3: Axis Alignment
 
@@ -163,15 +166,46 @@ For mesh reconstruction we utilized meshlab (or equivalently in Python `pymeshla
 </div>
 
 
+
+The convention that we used for axis alignment is as follows: 
+Y axis- Negative normal of ground plane 
+X axis- Lateral axis( from left half to right half) 
+Z axis- Spine axis( from head to pelvis) 
+
 This was the second most difficult part of our project after the AIX. We tried different approaches here. 
+Part-3 can be divided into four sections which are as follows: 
+1. Y axis estimation of far mesh 
+2. X axis estimation of far mesh 
+3. Z axis estimation of far mesh 
+4. Alignment of near mesh with far mesh and transfer of axis: 
+
 
 **Approach 1: User Point-Prompts** 
-Ground plane estimation on far view mesh via user point-prompts and then manual alignment of near mesh with far-mesh with the help of user-given similar points on far and near mesh. User had to give point prompts. 
 
+All the 4 steps point prompt based: 
+Methodlogy: 
+Step-1:  Section-1:Ground plane esimation( Y axis estimation) 
+
+Ground plane estimation on far view mesh via user point-prompts and applying RANSAC on the prompted points and fitting a plane through those points. 
 This is the video where you see the concept:-
 https://github.com/user-attachments/assets/dd799ff7-8163-4b09-94db-104bff3c622e
 
-**Approach 2: Automating Ground-Plane estimation:** 
+Step-2: Simultaneous execution of Section 2,3 and 4. 
+
+We used the idea of giving 4 point prompts on the user far mesh and near mesh simuletaneously. User will have to give 4 points of far mesh which were as follows, 
+Left shoulder , Right shoulder, neck center and pelvis center. These same corresponding points were to be given on the near mesh in the same order by the user. 
+Using these 4 points and normalization of mesh size we aligned near and far mesh with each other. 
+Using these 4 points also we defined the axis: 
+1. Left-shoulder and Right shoulder points helped to define the direction of X vector 
+2. Pelvis-center and Head-center points helped to define the direction of Z vector.
+
+
+** Approach-2: Automating everything** 
+
+Since any pipeline which depends on user prompts tend to be inefficient and incorporates user-prompt errors and other things. We wanted to eliminate that so we tried different ways and explored different things, but we are not able to make it into a concrete algorithm that worked. In case any person wanted to work on this, here is the idea.
+
+**Step-1: Automating Ground-Plane estimation:** 
+
 **Logic:** 
 1. Mesh -> converted to point cloud 
 2. Then find the largest 3 planes via iteration 
@@ -186,11 +220,12 @@ https://github.com/user-attachments/assets/dd799ff7-8163-4b09-94db-104bff3c622e
    `spread = np.max(dists) - np.min(dists) ; spread_ratio = spread / (max_extent + 1e-6)`
    Points from the mesh are projected into the candidate plane and then spread is calculated. Assumption that torso proj. spread < leg proj. spread from the true ground plane perspective. 
 
+Implementation video: 
 [gnd_auto_estimated.webm](https://github.com/user-attachments/assets/975ca648-88a7-4014-af14-830066b95adb)
-I automated the first part of ground plane estimation using a RANSAC based algorithm. 
 
 
-**Automating X-axis alignment:** 
+**Step-2: Lateral Axis estimation( X axis estimation) via 3D skelontiztion** 
+
 [X_axis auto estimation.webm](https://github.com/user-attachments/assets/31a0f464-ed6c-4057-a08e-d89a44b575ff)
 
 **Logic of the code:**
@@ -228,17 +263,21 @@ I automated the first part of ground plane estimation using a RANSAC based algor
   <img width="1013" height="485" alt="image" src="https://github.com/user-attachments/assets/f4214bdd-4627-4ae9-836c-771bc58949cf" />
 </div>
 
-Since any pipeline which depends on user prompts tend to be inefficient and incorporates user-prompt errors and other things. We wanted to eliminate that so we tried different ways and explored different things, but we are not able to make it into a concrete algorithm that worked. In case any person wanted to work on this, here is the idea. 
+**Step-3: Z axis estimation** 
 
+Naturally Z axis is the cross product of X axis and Y axis so doing this we can easily find the required Z axis. 
 
-**PCA alignment of near and far-mesh:** 
-- **X-axis Alignment**: Employs foot-based seeding and 3D skeletonization to align the X-axis parallel to the feet.
-- **Mesh Registration**: Semi-manual/automatic alignment of the near mesh with the aligned far mesh.
+**Step-4: Alignemnt of near and far-mesh** 
+This idea we were not able to implement in algorithim but for people working on this later here are some ideas that you can try 
 
+-** First we will do PCA based alignment of near and far mesh for rough alignment** 
+-**3D- Rasterization of Near and Far-mesh** for precise alignment, there are different transformer based 3D Rasterization models. One we really interested and keen was PREDATOR, here is the link: https://arxiv.org/abs/2011.13005
 ---
 
 ### Phase 2: AIX Estimation
 
+AIX Estimation can be broken down into 4 sections: 
+Section-1: The Z axis we found in the previous part
 #### Part 4: AIX (Asymmetry Index) Estimation
 Calculated directly on the aligned near mesh:
 
