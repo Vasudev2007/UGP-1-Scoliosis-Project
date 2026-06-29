@@ -3,6 +3,8 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
+![IIT Kanpur](https://img.shields.io/badge/IIT_Kanpur-Perception_&_Intelligence_Lab-blue.svg)
+![Stanford Medicine](https://img.shields.io/badge/Stanford-School_of_Medicine-red.svg)
 
 Welcome to the **Scoliosis Project** repository. This project aims to provide a robust, non-invasive, deep learning, and computer vision-assisted screening and diagnosis pipeline for Scoliosis using 3D point cloud and mesh processing.
 
