@@ -53,8 +53,7 @@ Phase 2 comprises part 4 only.
 
 
 **Step 0: Far and Near View video input**
-
-**Input:** Videos 
+ 
 **Video Shooting Technique:**
 * The person is kept in **center** with respect to the background.
 * The size of the person in comparison to the background should be large for VGGT to reconstruct properly.
