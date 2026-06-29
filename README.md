@@ -4,7 +4,6 @@
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 
-
 Welcome to the **Scoliosis Project** repository. This project aims to provide a robust, non-invasive, deep learning and computer vision assisted screening and diagnosis pipeline for Scoliosis using 3D point cloud and mesh processing.
 
 By leveraging a combination of Video-to-3D models (like VGGT) and specialized geometric processing (Meshlab algorithms, Point Cloud denoising, and alignment), this pipeline can extract critical metrics such as the **Hump Angle** and **Spine AIX** from bareback video inputs.
@@ -70,6 +69,8 @@ Phase 2 comprises part 4 only.
   <img width="752" height="371" alt="image" src="https://github.com/user-attachments/assets/cd83cc84-8871-4e05-ad76-76ab1e274854" />
 </div>
 
+- Extracts frames from near and far videos.
+- Constructs initial 3D `.glb` models and converts them to `.ply` point clouds.
 
 **Step 2: Frames to 3D Point cloud**
 
@@ -100,7 +101,7 @@ The output is in `.glb` format which is converted to `.ply` format using Python 
 </div>
 
 
-**Step-1: Far Point Cloud denosing **  
+**Step-1: Far Point Cloud denoising**  
 
 **Far Point Cloud Denoising:** 
 <div align="center">
@@ -138,19 +139,19 @@ Radius Outlier Removal removes points that have few neighbors in a given sphere 
   <img width="221" height="176" alt="image" src="https://github.com/user-attachments/assets/803fe063-cc9e-4076-8627-8c963cedd612" />
 </div>
 
-** Step-2: Near Point Cloud denoising:** 
-*VGGT's internal confidence threshold setting was already giving good to use results, hence we didn't bother with denoising it much. But our trials were done in a similar indoor environment so noise was of a single type. When we tried to do the same experiment in outdoor settings, the video contained other types of noise for which VGGT's internal setting and a fixed threshold can't help us anymore.
-*We explored different denoising using adaptive settings .  Hence if anyone is working on this in the future, please use some denoising for near-mesh as well which is adaptive to the noise present in the point cloud (same SOR and ROR denoising was found ineffective for near mesh). 
+**Step-2: Near Point Cloud denoising:** 
+* VGGT's internal confidence threshold setting was already giving good to use results, hence we didn't bother with denoising it much. But our trials were done in a similar indoor environment so noise was of a single type. When we tried to do the same experiment in outdoor settings, the video contained other types of noise for which VGGT's internal setting and a fixed threshold can't help us anymore.
+* We explored different denoising using adaptive settings. Hence if anyone is working on this in the future, please use some denoising for near-mesh as well which is adaptive to the noise present in the point cloud (same SOR and ROR denoising was found ineffective for near mesh). 
 
 - **Far Mesh**: Handles heavily noisy data via SOR-ROR denoising before creating the mesh using MeshLab algorithms.
 - **Near Mesh**: Optional denoising is applied, followed by mesh formation and mesh post-processing.
 
-**Step-2: Mesh reconstruction:**
+**Step-3: Mesh reconstruction:**
 <div align="center">
   <img width="870" height="441" alt="image" src="https://github.com/user-attachments/assets/a9f8ecee-c7e8-42d5-9382-183cf4daf7c2" />
 </div>
 
-*For mesh reconstruction we utilized meshlab (or equivalently in Python `pymeshlab` which is an excellent open-source implementation). We tried other mesh reconstruction softwares and libraries such as Trimesh but we didn't explore it much as meshlab did our work. 
+* For mesh reconstruction we utilized meshlab (or equivalently in Python `pymeshlab` which is an excellent open-source implementation). We tried other mesh reconstruction softwares and libraries such as Trimesh but we didn't explore it much as meshlab did our work. 
 
 <div align="center">
   <img width="841" height="457" alt="image" src="https://github.com/user-attachments/assets/6303f04c-3aba-4bb8-9842-fa6f9e98eb25" />
@@ -158,42 +159,40 @@ Radius Outlier Removal removes points that have few neighbors in a given sphere 
 
 ---
 
-
 #### Part 3: Axis Alignment
 
 <div align="center">
   <img width="877" height="455" alt="image" src="https://github.com/user-attachments/assets/3fcb6c3c-9bb1-410f-9e62-4f68d204ab26" />
 </div>
 
-
-
 The convention that we used for axis alignment is as follows: 
-Y axis- Negative normal of ground plane 
-X axis- Lateral axis( from left half to right half) 
-Z axis- Spine axis( from head to pelvis) 
+* **Y-axis:** Negative normal of ground plane 
+* **X-axis:** Lateral axis (from left half to right half) 
+* **Z-axis:** Spine axis (from head to pelvis) 
 
 This was the second most difficult part of our project after the AIX. We tried different approaches here. 
 Part-3 can be divided into four sections which are as follows: 
-1. Y axis estimation of far mesh 
-2. X axis estimation of far mesh 
-3. Z axis estimation of far mesh 
-4. Alignment of near mesh with far mesh and transfer of axis: 
+1. Y-axis estimation of far mesh 
+2. X-axis estimation of far mesh 
+3. Z-axis estimation of far mesh 
+4. Alignment of near mesh with far mesh and transfer of axis 
 
 
 **Approach 1: User Point-Prompts** 
 
 All the 4 steps point prompt based: 
-Methodlogy: 
-Step-1:  Section-1:Ground plane esimation( Y axis estimation) 
 
+**Methodology:** 
+
+**Step-1: Section-1: Ground plane estimation (Y-axis estimation)** 
 Ground plane estimation on far view mesh via user point-prompts and applying RANSAC on the prompted points and fitting a plane through those points. 
 This is the video where you see the concept:-
-https://github.com/user-attachments/assets/dd799ff7-8163-4b09-94db-104bff3c622e
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/dd799ff7-8163-4b09-94db-104bff3c622e" controls="controls" muted="muted" style="max-width: 100%;"></video>
+</div>
 
-Step-2: Simultaneous execution of Section 2,3 and 4. 
-
-We used the idea of giving 4 point prompts on the user far mesh and near mesh simuletaneously. User will have to give 4 points of far mesh which were as follows, 
-Left shoulder , Right shoulder, neck center and pelvis center. These same corresponding points were to be given on the near mesh in the same order by the user. 
+**Step-2: Simultaneous execution of Section 2, 3 and 4.** 
+We used the idea of giving 4 point prompts on the user far mesh and near mesh simultaneously. User will have to give 4 points of far mesh which were as follows: Left shoulder, Right shoulder, neck center and pelvis center. These same corresponding points were to be given on the near mesh in the same order by the user. 
 Using these 4 points and normalization of mesh size we aligned near and far mesh with each other. 
 Using these 4 points also we defined the axis: 
 1. Left-shoulder and Right shoulder points helped to define the direction of X vector 
@@ -221,12 +220,15 @@ Since any pipeline which depends on user prompts tend to be inefficient and inco
    Points from the mesh are projected into the candidate plane and then spread is calculated. Assumption that torso proj. spread < leg proj. spread from the true ground plane perspective. 
 
 Implementation video: 
-[gnd_auto_estimated.webm](https://github.com/user-attachments/assets/975ca648-88a7-4014-af14-830066b95adb)
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/975ca648-88a7-4014-af14-830066b95adb" controls="controls" muted="muted" style="max-width: 100%;"></video>
+</div>
 
+**Step-2: Lateral Axis estimation (X-axis estimation) via 3D skeletonization** 
 
-**Step-2: Lateral Axis estimation( X axis estimation) via 3D skelontiztion** 
-
-[X_axis auto estimation.webm](https://github.com/user-attachments/assets/31a0f464-ed6c-4057-a08e-d89a44b575ff)
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/31a0f464-ed6c-4057-a08e-d89a44b575ff" controls="controls" muted="muted" style="max-width: 100%;"></video>
+</div>
 
 **Logic of the code:**
 * The Y-axis is aligned with the negative normal of the ground plane.
@@ -248,36 +250,48 @@ Implementation video:
   <img width="997" height="556" alt="image" src="https://github.com/user-attachments/assets/593f1302-c416-46a6-91f3-dbb7af8d9489" />
 </div>
 
-[roi.webm](https://github.com/user-attachments/assets/f4081337-44a0-43db-b2be-19cf7b26b025)
-[roi_skeleton.webm](https://github.com/user-attachments/assets/9c2516b7-32a7-486c-88bd-b89ece589942)
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/f4081337-44a0-43db-b2be-19cf7b26b025" controls="controls" muted="muted" style="max-width: 100%;"></video>
+</div>
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/9c2516b7-32a7-486c-88bd-b89ece589942" controls="controls" muted="muted" style="max-width: 100%;"></video>
+</div>
 
 
 <div align="center">
   <img width="960" height="425" alt="image" src="https://github.com/user-attachments/assets/0d166d42-e0ea-4300-b5bb-a457eed522b9" />
 </div>
-[idea_of_hole.webm](https://github.com/user-attachments/assets/d2e5c39f-0fb2-41cb-b402-df457ee46ca7)
 
-[prunned_roi_skeleton.webm](https://github.com/user-attachments/assets/603bc2f5-71b5-42a4-84a8-55f834989d65)
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/d2e5c39f-0fb2-41cb-b402-df457ee46ca7" controls="controls" muted="muted" style="max-width: 100%;"></video>
+</div>
+
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/603bc2f5-71b5-42a4-84a8-55f834989d65" controls="controls" muted="muted" style="max-width: 100%;"></video>
+</div>
 
 <div align="center">
   <img width="1013" height="485" alt="image" src="https://github.com/user-attachments/assets/f4214bdd-4627-4ae9-836c-771bc58949cf" />
 </div>
 
-**Step-3: Z axis estimation** 
 
-Naturally Z axis is the cross product of X axis and Y axis so doing this we can easily find the required Z axis. 
+**Step-3: Z-axis estimation** 
 
-**Step-4: Alignemnt of near and far-mesh** 
-This idea we were not able to implement in algorithim but for people working on this later here are some ideas that you can try 
+Naturally Z-axis is the cross product of X-axis and Y-axis so doing this we can easily find the required Z-axis. 
 
--** First we will do PCA based alignment of near and far mesh for rough alignment** 
--**3D- Rasterization of Near and Far-mesh** for precise alignment, there are different transformer based 3D Rasterization models. One we really interested and keen was PREDATOR, here is the link: https://arxiv.org/abs/2011.13005
+**Step-4: Alignment of near and far-mesh** 
+This idea we were not able to implement in an algorithm but for people working on this later here are some ideas that you can try: 
+
+- **First we will do PCA based alignment of near and far mesh for rough alignment** 
+- **3D-Rasterization of Near and Far-mesh** for precise alignment, there are different transformer based 3D Rasterization models. One we really interested and keen was PREDATOR, here is the link: https://arxiv.org/abs/2011.13005
+
 ---
 
 ### Phase 2: AIX Estimation
 
 AIX Estimation can be broken down into 4 sections: 
-Section-1: The Z axis we found in the previous part
+Section-1: The Z-axis we found in the previous part
+
 #### Part 4: AIX (Asymmetry Index) Estimation
 Calculated directly on the aligned near mesh:
 
