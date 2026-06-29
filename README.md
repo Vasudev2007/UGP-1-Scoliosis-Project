@@ -69,9 +69,6 @@ Phase 2 comprises part 4 only.
   <img width="752" height="371" alt="image" src="https://github.com/user-attachments/assets/cd83cc84-8871-4e05-ad76-76ab1e274854" />
 </div>
 
-- Extracts frames from near and far videos.
-- Constructs initial 3D `.glb` models and converts them to `.ply` point clouds.
-
 **Step 2: Frames to 3D Point cloud**
 
 <div align="center">
@@ -198,20 +195,16 @@ Using these 4 points also we defined the axis:
 1. Left-shoulder and Right shoulder points helped to define the direction of X vector 
 2. Pelvis-center and Head-center points helped to define the direction of Z vector.
 
-Here is the video demonstration of the GUI: 
+Here is the video demonstration of the manual-alignment approach: 
+https://github.com/user-attachments/assets/40c62192-7ce6-4550-8524-a7573c9b2c11
 
+This was our first-draft of the end-to-end pipeline for Phase-1. I made it into a Gradio based GUI, here is the demonstration video for it: 
 
-
-
-//put link
-
-
-
-
-
-
-
-So we can really convert whatwe we have discussed till now into a end-to-end pipeline. I made it into a Gradio based GUI, here is the demonstration of it: 
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=YLP0G1gguTc">
+    <img src="https://img.youtube.com/vi/YLP0G1gguTc/maxresdefault.jpg" alt="Scoliosis Pipeline Demo" width="600">
+  </a>
+</div>
 
 **Approach-2: Automating everything** 
 
@@ -303,7 +296,7 @@ This idea we were not able to implement in an algorithm but for people working o
 
 ### Phase 2: AIX Estimation
 
-AIX Estimation can be broken down into 4 sections: 
+AIX Estimation can be broken down into 4 sections
 Section-1: The Z-axis we found in the previous part
 
 #### Part 4: AIX (Asymmetry Index) Estimation
