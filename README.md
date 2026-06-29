@@ -198,6 +198,20 @@ Using these 4 points also we defined the axis:
 1. Left-shoulder and Right shoulder points helped to define the direction of X vector 
 2. Pelvis-center and Head-center points helped to define the direction of Z vector.
 
+Here is the video demonstration of the GUI: 
+
+
+
+
+//put link
+
+
+
+
+
+
+
+So we can really convert whatwe we have discussed till now into a end-to-end pipeline. I made it into a Gradio based GUI, here is the demonstration of it: 
 
 **Approach-2: Automating everything** 
 
