@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 
-Welcome to the **Scoliosis Project** repository. This project aims to provide a robust, non-invasive, deep learning and computer vision assisted screening and diagnosis pipeline for Scoliosis using 3D point cloud and mesh processing.
+Welcome to the **Scoliosis Project** repository. This project aims to provide a robust, non-invasive, deep learning, and computer vision-assisted screening and diagnosis pipeline for Scoliosis using 3D point cloud and mesh processing.
 
 By leveraging a combination of Video-to-3D models (like VGGT) and specialized geometric processing (Meshlab algorithms, Point Cloud denoising, and alignment), this pipeline can extract critical metrics such as the **Hump Angle** and **Spine AIX** from bareback video inputs.
 
@@ -12,25 +12,25 @@ By leveraging a combination of Video-to-3D models (like VGGT) and specialized ge
 
 ## 📑 Table of Contents
 1. [Overview of the Pipeline Architecture](#-overview-of-the-pipeline-architecture)
-2. [Phase 1: Pre-processing for AIX estimation](#phase-1-pre-processing-for-aix-estimation)
-    * [Part 1: Video to Point Cloud conversion](#part-1-video-to-point-cloud-conversion)
+2. [Phase 1: Pre-processing for AIX Estimation](#-phase-1-pre-processing-for-aix-estimation)
+    * [Part 1: Video to Point Cloud Conversion](#part-1-video-to-point-cloud-conversion)
     * [Part 2: Mesh Generation and Denoising](#part-2-mesh-generation-and-denoising)
     * [Part 3: Axis Alignment](#part-3-axis-alignment)
-3. [Phase 2: AIX Estimation](#phase-2-aix-estimation)
-4. [Repository Structure](#-repository-structure)
-5. [Getting Started](#-getting-started)
-6. [Contributing & License](#-contributing)
+3. [Phase 2: AIX Estimation](#-phase-2-aix-estimation)
+    * [Part 4: AIX Calculation Sections](#part-4-aix-asymmetry-index-estimation)
+4. [Future Phase Project](#-future-phase-project)
+5. [Repository Structure](#-repository-structure)
 
 ---
 
 ## 🌟 Overview of the Pipeline Architecture 
 
-The pipeline can be divided into two phases. 
+The pipeline can be divided into two main phases:
 
 - **Phase 1**: Pre-processing for AIX estimation (Comprises Parts 1 to 3)
 - **Phase 2**: AIX estimation (Comprises Part 4 only)
 
-I have described the pipeline in four parts for the ease of understanding:
+I have described the pipeline in four parts for ease of understanding:
 
 1. **Video to Point Cloud Conversion**: Automated extraction of frames from patient videos, pre-processing, and passing through a VGGT model to construct 3D Point Clouds.
 2. **Mesh Generation & Denoising**: Robust SOR/ROR denoising techniques applied on far meshes, and Meshlab-based reconstruction for detailed 3D surface meshes.
@@ -43,15 +43,15 @@ I have described the pipeline in four parts for the ease of understanding:
 
 ---
 
-## 🏗️ Phase 1: Pre-processing for AIX estimation
+## 🏗️ Phase 1: Pre-processing for AIX Estimation
 
 <div align="center">
   <img width="882" height="405" alt="image" src="https://github.com/user-attachments/assets/bcef242f-717a-4d1e-893c-7ea34e14cdd8" />
   <br>
-  <em>Overall pipeline Architecture for Phase-1</em>
+  <em>Overall Pipeline Architecture for Phase-1</em>
 </div>
 
-### Part 1: Video to Point Cloud conversion
+### Part 1: Video to Point Cloud Conversion
 
 <div align="center">
   <img width="531" height="380" alt="image" src="https://github.com/user-attachments/assets/d5ddb247-8d5b-4657-adde-5fea2893ed39" />
@@ -59,33 +59,33 @@ I have described the pipeline in four parts for the ease of understanding:
 
 **Workflow**: `Videos -> Frames -> Pre-processed Frames -> VGGT -> PLY Conversion -> Point Cloud`
 
-#### Step 0: Far and Near View video input
+#### Step 0: Far and Near View Video Input
 **Video Shooting Technique:**
-* The person is kept in **center** with respect to the background.
+* The person is kept in the **center** with respect to the background.
 * The size of the person in comparison to the background should be large for VGGT to reconstruct properly.
 * The camera is rotated in a circle about the person while filming to gather all views for 3D Reconstruction until one complete circle is made.
-* Here we have done the setup with a t-shirt on, but the same can be done with bare-back.
+* Here we have done the setup with a t-shirt on, but the same can be done bare-back.
   
 #### Step 1: Videos to Frames
-**Key points:** * 45 frames for both Near and Far video are chosen. This particular number ‘45’ is completely due to GPU Capabilities. 
-* Higher the frames, higher the quality of mesh and higher the accuracy. Produces very decent results in 30-45 frames.
+**Key points:** * 45 frames for both Near and Far videos are chosen. This particular number ‘45’ is strictly due to GPU capabilities. 
+* Higher frame counts yield higher quality meshes and accuracy. The pipeline produces very decent results with 30-45 frames.
 
 <div align="center">
   <img width="752" height="371" alt="image" src="https://github.com/user-attachments/assets/cd83cc84-8871-4e05-ad76-76ab1e274854" />
 </div>
 
-#### Step 2: Frames to 3D Point cloud
+#### Step 2: Frames to 3D Point Cloud
 <div align="center">
   <img width="850" height="421" alt="image" src="https://github.com/user-attachments/assets/589eed2e-e782-470b-832d-620cf9fe4df3" />
 </div>
 
 **Key points:**
-* We utilized VGGT for 3D reconstruction. We experimented with a lot of other open-source 3D reconstruction softwares which can be found in the experiments folder. We also checked for polycam reconstruction and colmap as well. 
-* We experimented with VGGT’s confidence thresholds. We found the following settings via repetitive trials and errors to be the best: 
+* We utilized VGGT for 3D reconstruction. We experimented with various open-source 3D reconstruction software (found in the experiments folder), including Polycam and COLMAP. 
+* Through repetitive trials and errors, we optimized VGGT’s confidence thresholds: 
   * **Near Reconstruction:** 85 Confidence threshold
   * **Far Reconstruction:** 50 Confidence threshold (default) 
 
-The output is in `.glb` format which is converted to `.ply` format using Python Scripts (which is not shown in the pipeline diagram). Keeping the threshold for near reconstruction as 85 removed the need for denoising it.
+The output is in `.glb` format, which is converted to `.ply` format using Python scripts. Setting the threshold for near reconstruction to 85 largely eliminated the need for subsequent denoising.
 
 <div align="center">
   <img width="853" height="380" alt="image" src="https://github.com/user-attachments/assets/0e64b18c-0c39-469d-bc40-e3b0c1727c69" />
@@ -95,7 +95,7 @@ The output is in `.glb` format which is converted to `.ply` format using Python 
 
 ### Part 2: Mesh Generation and Denoising
 
-**Overview of what we have done till now:**
+**Overview of progress so far:**
 <div align="center">
   <img width="746" height="395" alt="image" src="https://github.com/user-attachments/assets/a9f7b43f-f6e9-4605-bd63-879cecd5d7ef" />
 </div>
@@ -105,24 +105,24 @@ The output is in `.glb` format which is converted to `.ply` format using Python 
   <img width="862" height="377" alt="image" src="https://github.com/user-attachments/assets/fca769e7-9101-4315-8235-0a3802f2a874" />
 </div>
 
-**Types of noise in Far-point cloud:** <div align="center">
+**Types of noise in the Far-point cloud:** <div align="center">
   <img width="880" height="536" alt="image" src="https://github.com/user-attachments/assets/f805f2bf-e99f-4581-a28b-fdb8b45c2a9a" />
 </div>
 
 **Denoising Method for Far-point cloud:** <div align="center">
   <img width="322" height="456" alt="image" src="https://github.com/user-attachments/assets/39b531bf-d02f-4238-bc15-6bc0445e84fc" />
 </div>
-Thanks to this open-source implementation, we utilized this method: [Open3D Pointcloud Outlier Removal](https://www.open3d.org/docs/latest/tutorial/geometry/pointcloud_outlier_removal.html)
+*Reference for methodology: [Open3D Pointcloud Outlier Removal](https://www.open3d.org/docs/latest/tutorial/geometry/pointcloud_outlier_removal.html)*
 
-* **Module 1: SOR Denoising** Statistical Outlier Removal removes points that are further away from their neighbors compared to the average for the point cloud. It takes two input parameters:
-  * `nb_neighbors`: specifies how many neighbors are taken into account to calculate average distance.
-  * `std_ratio`: threshold level based on standard deviation. Lower number = more aggressive filter.
+* **Module 1: SOR Denoising:** Statistical Outlier Removal removes points that are further away from their neighbors compared to the average for the point cloud. 
+  * `nb_neighbors`: specifies how many neighbors are considered to calculate the average distance.
+  * `std_ratio`: sets the threshold level based on the standard deviation. A lower number means a more aggressive filter.
   
   <div align="center">
     <img width="243" height="351" alt="image" src="https://github.com/user-attachments/assets/a9542969-334c-44d6-bd36-ba637b2e5888" />
   </div>
 
-* **Module 2: ROR Denoising** Radius Outlier Removal removes points that have few neighbors in a given sphere around them. Parameters:
+* **Module 2: ROR Denoising:** Radius Outlier Removal removes points that have few neighbors within a given sphere around them.
   * `nb_points`: minimum amount of points the sphere should contain.
   * `radius`: defines the radius of the sphere used for counting neighbors.
 
@@ -131,8 +131,8 @@ Thanks to this open-source implementation, we utilized this method: [Open3D Poin
   </div>
 
 #### Step 2: Near Point Cloud Denoising 
-* VGGT's internal confidence threshold setting was already giving good to use results, hence we didn't bother with denoising it much. But our trials were done in a similar indoor environment so noise was of a single type. When we tried to do the same experiment in outdoor settings, the video contained other types of noise for which VGGT's internal setting and a fixed threshold can't help us anymore.
-* We explored different denoising using adaptive settings. Hence if anyone is working on this in the future, please use some denoising for near-mesh as well which is adaptive to the noise present in the point cloud (same SOR and ROR denoising was found ineffective for near mesh). 
+* VGGT's internal confidence threshold setting provided strong results, minimizing the need for denoising. However, tests in outdoor settings introduced new noise types where fixed thresholds failed. 
+* Future iterations should explore adaptive denoising for near-meshes, as standard SOR/ROR proved ineffective here.
   * **Far Mesh**: Handles heavily noisy data via SOR-ROR denoising before creating the mesh using MeshLab algorithms.
   * **Near Mesh**: Optional denoising is applied, followed by mesh formation and mesh post-processing.
 
@@ -141,7 +141,7 @@ Thanks to this open-source implementation, we utilized this method: [Open3D Poin
   <img width="870" height="441" alt="image" src="https://github.com/user-attachments/assets/a9f8ecee-c7e8-42d5-9382-183cf4daf7c2" />
 </div>
 
-* For mesh reconstruction we utilized meshlab (or equivalently in Python `pymeshlab` which is an excellent open-source implementation). We tried other mesh reconstruction softwares and libraries such as Trimesh but we didn't explore it much as meshlab did our work. 
+* We utilized MeshLab (or its Python equivalent, `pymeshlab`) for robust mesh reconstruction. 
 
 <div align="center">
   <img width="841" height="457" alt="image" src="https://github.com/user-attachments/assets/6303f04c-3aba-4bb8-9842-fa6f9e98eb25" />
@@ -155,38 +155,35 @@ Thanks to this open-source implementation, we utilized this method: [Open3D Poin
   <img width="877" height="455" alt="image" src="https://github.com/user-attachments/assets/3fcb6c3c-9bb1-410f-9e62-4f68d204ab26" />
 </div>
 
-The convention that we used for axis alignment is as follows: 
-* **Y-axis:** Negative normal of ground plane 
+The convention used for axis alignment is as follows: 
+* **Y-axis:** Negative normal of the ground plane 
 * **X-axis:** Lateral axis (from left half to right half) 
 * **Z-axis:** Spine axis (from head to pelvis) 
 
-This was the second most difficult part of our project after the AIX. We tried different approaches here. 
-Part-3 can be divided into four sections which are as follows: 
-1. Y-axis estimation of far mesh 
-2. X-axis estimation of far mesh 
-3. Z-axis estimation of far mesh 
+Part 3 is divided into four critical sections: 
+1. Y-axis estimation of the far mesh 
+2. X-axis estimation of the far mesh 
+3. Z-axis estimation of the far mesh 
 4. Alignment of near mesh with far mesh and transfer of axis 
 
 #### Approach 1: User Point-Prompts (Manual Alignment)
 
-All 4 steps are point prompt based: 
-
-* **Step-1: Ground plane estimation (Y-axis estimation)** Ground plane estimation on far view mesh via user point-prompts and applying RANSAC on the prompted points and fitting a plane through those points. 
+* **Step 1: Ground plane estimation (Y-axis):** Ground plane estimation on the far view mesh via user point-prompts, applying RANSAC on the prompted points, and fitting a plane. 
   <div align="center">
     <video src="https://github.com/user-attachments/assets/dd799ff7-8163-4b09-94db-104bff3c622e" controls="controls" muted="muted" style="max-width: 100%;"></video>
   </div>
 
-* **Step-2: Simultaneous execution of Sections 2, 3 and 4** We used the idea of giving 4 point prompts on the user far mesh and near mesh simultaneously. User will have to give 4 points of far mesh which were as follows: Left shoulder, Right shoulder, neck center and pelvis center. These same corresponding points were to be given on the near mesh in the same order by the user. 
+* **Step 2: Simultaneous execution of Sections 2, 3, and 4:** The user provides 4 point prompts on the far mesh and near mesh simultaneously (Left shoulder, Right shoulder, neck center, and pelvis center). 
   
-  Using these 4 points and normalization of mesh size we aligned near and far mesh with each other. Using these 4 points also we defined the axis: 
-  1. Left-shoulder and Right shoulder points helped to define the direction of X vector 
-  2. Pelvis-center and Head-center points helped to define the direction of Z vector.
+  Using these 4 points and normalizing mesh size, we align the near and far mesh. The axes are defined as: 
+  1. Left-shoulder and Right-shoulder points define the X vector direction. 
+  2. Pelvis-center and Head-center points define the Z vector direction.
 
   <div align="center">
     <video src="https://github.com/user-attachments/assets/40c62192-7ce6-4550-8524-a7573c9b2c11" controls="controls" muted="muted" style="max-width: 100%;"></video>
   </div>
 
-  *GUI Demonstration:* This was our first-draft of the end-to-end pipeline for Phase-1. I made it into a Gradio based GUI, here is the demonstration video for it: 
+  *GUI Demonstration:* Below is the first draft of the end-to-end Phase 1 pipeline, built into a Gradio GUI: 
   <div align="center">
     <a href="https://www.youtube.com/watch?v=YLP0G1gguTc">
       <img src="https://img.youtube.com/vi/YLP0G1gguTc/maxresdefault.jpg" alt="Scoliosis Pipeline Demo" width="600">
@@ -195,133 +192,125 @@ All 4 steps are point prompt based:
 
 #### Approach 2: Automating Everything
 
-Since any pipeline which depends on user prompts tend to be inefficient and incorporates user-prompt errors and other things. We wanted to eliminate that so we tried different ways and explored different things, but we are not able to make it into a concrete algorithm that worked. In case any person wanted to work on this, here is the idea.
+To eliminate user-prompt errors, we explored automated algorithms:
 
-* **Step-1: Automating Ground-Plane estimation** **Logic:** 1. Mesh -> converted to point cloud 
-  2. Then find the largest 3 planes via iteration 
-  3. Evaluate candidate ground plane via the following definition:
-     `Score = ortho_score*2 + spread_ratio` 
-     * **Ortho_score**: `dot_pc3 = abs(np.dot(normal, pc3)  ; ortho_score = 1.0 - dot_pc3`. Convention: `pc1` (Major axis) in our case would be the spinal axis roughly. `Pc3` (minor axis) in our case would be the left-right axis. Ortho-score reduces the chance of walls being selected as the candidate as `pc3` for the wall-normal would be parallel. 
-     * **Spread_ratio**: `spread = np.max(dists) - np.min(dists) ; spread_ratio = spread / (max_extent + 1e-6)`. Points from the mesh are projected into the candidate plane and then spread is calculated. Assumption that torso proj. spread < leg proj. spread from the true ground plane perspective. 
-
+* **Step 1: Automating Ground-Plane Estimation:** 1. Convert Mesh to point cloud. 
+  2. Find the largest 3 planes via iteration. 
+  3. Evaluate candidate ground planes using: `Score = ortho_score*2 + spread_ratio`.
+  
   <div align="center">
     <video src="https://github.com/user-attachments/assets/975ca648-88a7-4014-af14-830066b95adb" controls="controls" muted="muted" style="max-width: 100%;"></video>
   </div>
 
-* **Step-2: Lateral Axis estimation (X-axis estimation) via 3D skeletonization** <div align="center">
+* **Step 2: Lateral Axis Estimation (X-axis) via 3D Skeletonization:** <div align="center">
     <video src="https://github.com/user-attachments/assets/31a0f464-ed6c-4057-a08e-d89a44b575ff" controls="controls" muted="muted" style="max-width: 100%;"></video>
   </div>
 
   **Logic of the code:**
-  * The Y-axis is aligned with the negative normal of the ground plane.
-  * A Region of Interest (ROI) is taken from 5% to 25% of the mesh's max spread above the ground plane.
-  * The ROI and full mesh are voxelized.
-  * The ROI is skeletonized using 3D Skeletonization.
-  * Foot-seeds are identified by finding the largest holes in a slab from the ground plane to 1% of the max spread, exploiting that the surface mesh will show gaps near the feet when viewed from below. Two holes indicate two seeds; one large hole indicates one.
-  * Geodesic distance is computed on the ROI, using the foot-seeds as the source.
-  * Parts with larger geodesic distances (e.g., hands) are pruned from the skeletonized ROI.
-  * The pruned ROI points are projected onto the ground plane, and the centroids of the two leg clusters are found.
-  * The X-axis is aligned parallel to the line connecting the two leg centroids.
+  * Y-axis is aligned with the negative normal of the ground plane.
+  * An ROI is taken from 5% to 25% of the mesh's max spread above the ground plane.
+  * The ROI is skeletonized, and foot-seeds are identified by locating the largest holes in the mesh slab near the ground.
+  * Geodesic distance is computed, pruning larger distances (e.g., hands) to isolate leg clusters.
+  * The pruned ROI points project onto the ground plane to find leg centroids. The X-axis aligns parallel to the line connecting these centroids.
 
   <div align="center">
     <img width="972" height="557" alt="image" src="https://github.com/user-attachments/assets/6695bad8-b3c9-463e-b420-f87766ebf4ca" />
   </div>
 
-  * **Step 2.1: ROI Extraction and Voxelization** <div align="center">
+  * **Step 2.1: ROI Extraction and Voxelization**
+    <div align="center">
       <img width="997" height="556" alt="image" src="https://github.com/user-attachments/assets/593f1302-c416-46a6-91f3-dbb7af8d9489" />
-      <em>Image showing ROI extraction and followed by voxelization of the ROI </em>
-      <br>
+      <em>Image showing ROI extraction followed by voxelization</em>
+      <br><br>
       <video src="https://github.com/user-attachments/assets/f4081337-44a0-43db-b2be-19cf7b26b025" controls="controls" muted="muted" style="max-width: 100%;"></video>
-      <em>Video shows voxelized ROI </em>
+      <em>Video of the voxelized ROI</em>
     </div>
 
-  * **Step 2.2: Foot based geodesic pruning**
+  * **Step 2.2: Foot-based Geodesic Pruning**
     <div align="center">
       <img width="960" height="425" alt="image" src="https://github.com/user-attachments/assets/0d166d42-e0ea-4300-b5bb-a457eed522b9" />
-      <em>Image shows foot based seeding on the 3D mesh that has holes corresponding to the foot region</em>
-      <br>
-      <video src="https://github.com/user-attachments/assets/d2e5c39f-0fb2-41cb-b402-df457ee46ca7" controls="controls" muted="muted" style="max-width: 100%;"></video>
-      <em>Holes in the downward portion of mesh due to feets</em>
-      <br>
+      <em>Foot-based seeding on the 3D mesh</em>
+      <br><br>
       <video src="https://github.com/user-attachments/assets/603bc2f5-71b5-42a4-84a8-55f834989d65" controls="controls" muted="muted" style="max-width: 100%;"></video>
-      <em>Prunned ROI, as you see voxels corresponding to hands have been prunned and only leg skeleton points are left</em>
+      <em>Pruned ROI isolated to leg skeleton points</em>
     </div>
 
-  * **Step 2.3: Projection of Leg points on ground plane and centroid estimation**
+  * **Step 2.3: X-Axis Estimation via Centroids**
     <div align="center">
       <img width="1013" height="485" alt="image" src="https://github.com/user-attachments/assets/f4214bdd-4627-4ae9-836c-771bc58949cf" />
-      <em>As you can see in the image the X axis has perfectly aligned as the lateral-axis</em>
+      <em>The X-axis perfectly aligned as the lateral axis</em>
     </div>
 
-* **Step-3: Z-axis estimation** Naturally Z-axis is the cross product of X-axis and Y-axis so doing this we can easily find the required Z-axis. 
-
-* **Step-4: Alignment of near and far-mesh** This idea we were not able to implement in an algorithm but for people working on this later here are some ideas that you can try: 
-  * **First we will do PCA based alignment of near and far mesh for rough alignment** * **3D-Rasterization of Near and Far-mesh** for precise alignment, there are different transformer based 3D Rasterization models. One we really interested and keen was PREDATOR, here is the link: [PREDATOR Paper](https://arxiv.org/abs/2011.13005)
+* **Step 3: Z-Axis Estimation:** The Z-axis is derived naturally as the cross product of the X-axis and Y-axis. 
+* **Step 4: Alignment of Near and Far-Mesh:** Potential future solutions include PCA-based rough alignment followed by 3D-Rasterization transformer models (like [PREDATOR](https://arxiv.org/abs/2011.13005)) for precise co-registration.
 
 ---
 
 ## 🔬 Phase 2: AIX Estimation
 
+<div align="center">
+  <img width="327" height="365" alt="image" src="https://github.com/user-attachments/assets/2ea6e803-5e9e-400c-81c5-598a1b5d2c00" />
+</div>
+
 ### Part 4: AIX (Asymmetry Index) Estimation
 
+Once the mesh is aligned, we proceed to compute key medical parameters directly from the near mesh. Based on literature reviews, we focused on three critical measurements:
 
-<img width="327" height="365" alt="image" src="https://github.com/user-attachments/assets/2ea6e803-5e9e-400c-81c5-598a1b5d2c00" />
-
-AIX Estimation can be broken down into 3 sections.
-Since we have now have the aligned mesh we can proceed on computing key medical parameters from the near mesh with the axis informations. There could be a lot of parameters that one can extract and do research. We did review of literature and on that basis we took 3 critical measurements.
-Section-1: AIX-1: Spine computation {Digital-twin of Spine}. 
-Section-2: AIX-2: Rib-hum-angle computation { Digital-twin of Scoliometer} 
-Section-3: AIX-3: Head-pelvis center shift computation  
-
-
-**AIX-1: Digital Twin of Spine***
+#### Section 1: AIX-1 (Digital Twin of Spine)
 <div align="center">
-      <img width="845" height="495" alt="image" src="https://github.com/user-attachments/assets/245315f2-4f67-4e57-8099-b39b223c08f6" />
-      <em>Spine Estimation</em>
-    </div>
+  <img width="845" height="495" alt="image" src="https://github.com/user-attachments/assets/245315f2-4f67-4e57-8099-b39b223c08f6" />
+  <em>Spine Estimation</em>
+</div>
 
-We extracted two critical information from here, first is the mid-saggital plane and second is the spine. 
-From these two information one can do various types of medical parameter computation: Here are some papers from which I drew ideas for clinical parameters computation 
+We extract two vital pieces of information: the mid-sagittal plane and the spine trajectory. This allows for area-based or volume-based AIX computation as suggested in clinical literature.
+
 <div align="center">
-      <img width="597" height="188" alt="image" src="https://github.com/user-attachments/assets/0b0f31dc-0507-4e8b-bc2c-2c2c06e7e543" />
-      <em>Area-based AIX, it can be extended to volume based as well.</em>
-    </div>
+  <img width="597" height="188" alt="image" src="https://github.com/user-attachments/assets/0b0f31dc-0507-4e8b-bc2c-2c2c06e7e543" />
+  <em>Area-based AIX calculation methods.</em>
+</div>
 
+#### Section 2: AIX-2 (Coronal Offset & Rib-Hump Angle)
+**Logic:** The 3D mesh back is partitioned into grids based on height measurements `h(i,j)` from the ground plane. A hump is identified when neighboring grids show disproportionate heights. We fit a normal plane to the humps (the "rib-hump plane") to compute critical parameters, effectively acting as a digital scoliometer.
 
-**AIX-2:Coronol Offset**:
-
-Logic: 
-The 3D mesh back is partioned into grids and each grid has h(i,j) where h is height measure from the ground plane, now we idenitfy a group of grids togethers as a hump if they collectively have higher height function compared to neighbours, naturally persons have 2 rib hump ,but due to scoliosis they are of disproptionate lenghts, we fit a plane such that is normal to the rib-humps and call it the rib-hump plane and with help of that we compute different parameters.
-<img width="307" height="353" alt="image" src="https://github.com/user-attachments/assets/b1de071e-956c-4947-bcec-3f7724ebcf57" />
-
-[Screencast from 17-12-25 08_19_50 PM IST.webm](https://github.com/user-attachments/assets/642424b0-de84-476d-bc56-2c14337f121a)
-Video showing the visualization of how rib hump angle computation is done 
 <div align="center">
-      <img width="813" height="498" alt="image" src="https://github.com/user-attachments/assets/40efbdac-8511-41c9-bcb9-e33784686993" />
-      <em>Parameters extracted from rib-hump plane.</em>
-    </div>
+  <img width="307" height="353" alt="image" src="https://github.com/user-attachments/assets/b1de071e-956c-4947-bcec-3f7724ebcf57" />
+</div>
 
-***AIX-3: Head and pelvis center offset:***
-<img width="855" height="506" alt="image" src="https://github.com/user-attachments/assets/5b974007-91c8-485b-b79d-b5d84b198f41" />
+*See the algorithm in action:* [Rib-Hump Angle Visualization (WebM)](https://github.com/user-attachments/assets/642424b0-de84-476d-bc56-2c14337f121a)
 
-Here is the video demonstration of the alogrithm: 
+<div align="center">
+  <img width="813" height="498" alt="image" src="https://github.com/user-attachments/assets/40efbdac-8511-41c9-bcb9-e33784686993" />
+  <em>Parameters extracted from the rib-hump plane.</em>
+</div>
+
+#### Section 3: AIX-3 (Head and Pelvis Center Shift)
+<div align="center">
+  <img width="855" height="506" alt="image" src="https://github.com/user-attachments/assets/5b974007-91c8-485b-b79d-b5d84b198f41" />
+</div>
+
+Here is the video demonstration of the final AIX extraction algorithm: 
 <div align="center">
   <a href="https://www.youtube.com/watch?v=6BdOaebS250">
     <img src="https://img.youtube.com/vi/6BdOaebS250/maxresdefault.jpg" alt="Demo Video" width="600">
   </a>
-   <em> Click on the thumbnail to watch on youtube</em>
+  <br>
+  <em>Click on the thumbnail to watch on YouTube</em>
 </div>
+
 ---
 
+## 🚀 Future Phase Project
 
-## Future-phase project: 
+If anyone going through the repo is keen, we can use these extracted parameters to facilitate large-scale data collection on scoliosis and non-scoliosis patients. This data could train an ML classification model for automated screening. My scope concluded at the parameter extraction phase, and the broader project has since been transferred to Stanford. 
 
-If anyone going through the repo is keen, we can use these extracted parameters and do large scale data-collection on scoliosis and non-scoliosis patients and can fit ML model on that to identify scoliosis. I never really got the chance to work ahead, because my task of the project was till this. Rest of the project was transferred to Stanford. If someone wants any explaination over any part, feel free to comment or mail me. 
+If someone wants an explanation of any part of the codebase or math, feel free to open an issue or email me. 
+
+---
 
 ## 📂 Repository Structure
 
 ```text
-├── src/                  # Main Pipeline Source Code (After running organize_repo.py)
+├── src/                  # Main Pipeline Source Code
 │   ├── alignment/        # Point picking and manual/automatic alignment helpers
 │   ├── denoising/        # SOR-ROR denoising scripts and GPU experiments
 │   ├── gnd_estimate/     # Ground plane estimation algorithms
