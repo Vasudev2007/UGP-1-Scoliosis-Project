@@ -200,7 +200,7 @@ Using these 4 points also we defined the axis:
 2. Pelvis-center and Head-center points helped to define the direction of Z vector.
 
 
-** Approach-2: Automating everything** 
+**Approach-2: Automating everything** 
 
 Since any pipeline which depends on user prompts tend to be inefficient and incorporates user-prompt errors and other things. We wanted to eliminate that so we tried different ways and explored different things, but we are not able to make it into a concrete algorithm that worked. In case any person wanted to work on this, here is the idea.
 
