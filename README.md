@@ -251,37 +251,45 @@ Implementation video:
 * The pruned ROI points are projected onto the ground plane, and the centroids of the two leg clusters are found.
 * The X-axis is aligned parallel to the line connecting the two leg centroids.
 
+
 <div align="center">
   <img width="972" height="557" alt="image" src="https://github.com/user-attachments/assets/6695bad8-b3c9-463e-b420-f87766ebf4ca" />
 </div>
 
+***Step2.1: ROI Extraction and Voxelization*** 
 
 <div align="center">
   <img width="997" height="556" alt="image" src="https://github.com/user-attachments/assets/593f1302-c416-46a6-91f3-dbb7af8d9489" />
+  <em>Image showing ROI extraction and followed by voxelization of the ROI </em>
 </div>
+
 
 <div align="center">
   <video src="https://github.com/user-attachments/assets/f4081337-44a0-43db-b2be-19cf7b26b025" controls="controls" muted="muted" style="max-width: 100%;"></video>
-</div>
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/9c2516b7-32a7-486c-88bd-b89ece589942" controls="controls" muted="muted" style="max-width: 100%;"></video>
+  <em>Video shows voxelized ROI </em>
 </div>
 
+***Step2.2: Foot based geodesic pruning***
 
 <div align="center">
   <img width="960" height="425" alt="image" src="https://github.com/user-attachments/assets/0d166d42-e0ea-4300-b5bb-a457eed522b9" />
+  <em>Image shows foot based seeding on the 3D mesh that has holes corresponding to the foot region</em>
 </div>
 
 <div align="center">
   <video src="https://github.com/user-attachments/assets/d2e5c39f-0fb2-41cb-b402-df457ee46ca7" controls="controls" muted="muted" style="max-width: 100%;"></video>
+  <em>Holes in the downward portion of mesh due to feets</em>
 </div>
 
 <div align="center">
   <video src="https://github.com/user-attachments/assets/603bc2f5-71b5-42a4-84a8-55f834989d65" controls="controls" muted="muted" style="max-width: 100%;"></video>
+  <em>Prunned ROI, as you see voxels corresponding to hands have been prunned and only leg skeleton points are left</em>
 </div>
 
+***Step2.3: Projection of Leg points on ground plane and centroid estimation leading to X axis estimation*** 
 <div align="center">
   <img width="1013" height="485" alt="image" src="https://github.com/user-attachments/assets/f4214bdd-4627-4ae9-836c-771bc58949cf" />
+  <em>As you can see in the image the X axis has perfectly aligned as the lateral-axis</em>
 </div>
 
 
