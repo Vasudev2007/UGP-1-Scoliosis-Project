@@ -196,7 +196,10 @@ Using these 4 points also we defined the axis:
 2. Pelvis-center and Head-center points helped to define the direction of Z vector.
 
 Here is the video demonstration of the manual-alignment approach: 
-https://github.com/user-attachments/assets/40c62192-7ce6-4550-8524-a7573c9b2c11
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/40c62192-7ce6-4550-8524-a7573c9b2c11" controls="controls" muted="muted" style="max-width: 100%;"></video>
+</div>
+
 
 This was our first-draft of the end-to-end pipeline for Phase-1. I made it into a Gradio based GUI, here is the demonstration video for it: 
 
