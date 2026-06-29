@@ -247,7 +247,8 @@ Since any pipeline which depends on user prompts tend to be inefficient and inco
       <em>Prunned ROI, as you see voxels corresponding to hands have been prunned and only leg skeleton points are left</em>
     </div>
 
-  * **Step 2.3: Projection of Leg points on ground plane and centroid estimation** <div align="center">
+  * **Step 2.3: Projection of Leg points on ground plane and centroid estimation**
+    <div align="center">
       <img width="1013" height="485" alt="image" src="https://github.com/user-attachments/assets/f4214bdd-4627-4ae9-836c-771bc58949cf" />
       <em>As you can see in the image the X axis has perfectly aligned as the lateral-axis</em>
     </div>
@@ -261,20 +262,61 @@ Since any pipeline which depends on user prompts tend to be inefficient and inco
 
 ## 🔬 Phase 2: AIX Estimation
 
-AIX Estimation can be broken down into 4 sections.
-Section-1: The Z-axis we found in the previous part.
-
 ### Part 4: AIX (Asymmetry Index) Estimation
-Calculated directly on the aligned near mesh:
 
-* **Hip AIX**: Offset calculation between hip-center and neck-center.
-  <div align="center">
-    <img width="1013" height="485" alt="image" src="https://github.com/user-attachments/assets/d3bf59f4-3b95-4d68-a0af-8a20b1b8aec8" />
-  </div>
-* **Spine Estimation**: Mid-sagittal plane estimation via centroids.
-* **Hump Angle**: AIX calculation using the optimized mid-sagittal plane.
 
+<img width="327" height="365" alt="image" src="https://github.com/user-attachments/assets/2ea6e803-5e9e-400c-81c5-598a1b5d2c00" />
+
+AIX Estimation can be broken down into 3 sections.
+Since we have now have the aligned mesh we can proceed on computing key medical parameters from the near mesh with the axis informations. There could be a lot of parameters that one can extract and do research. We did review of literature and on that basis we took 3 critical measurements.
+Section-1: AIX-1: Spine computation {Digital-twin of Spine}. 
+Section-2: AIX-2: Rib-hum-angle computation { Digital-twin of Scoliometer} 
+Section-3: AIX-3: Head-pelvis center shift computation  
+
+
+**AIX-1: Digital Twin of Spine***
+<div align="center">
+      <img width="845" height="495" alt="image" src="https://github.com/user-attachments/assets/245315f2-4f67-4e57-8099-b39b223c08f6" />
+      <em>Spine Estimation</em>
+    </div>
+
+We extracted two critical information from here, first is the mid-saggital plane and second is the spine. 
+From these two information one can do various types of medical parameter computation: Here are some papers from which I drew ideas for clinical parameters computation 
+<div align="center">
+      <img width="597" height="188" alt="image" src="https://github.com/user-attachments/assets/0b0f31dc-0507-4e8b-bc2c-2c2c06e7e543" />
+      <em>Area-based AIX, it can be extended to volume based as well.</em>
+    </div>
+
+
+**AIX-2:Coronol Offset**:
+
+Logic: 
+The 3D mesh back is partioned into grids and each grid has h(i,j) where h is height measure from the ground plane, now we idenitfy a group of grids togethers as a hump if they collectively have higher height function compared to neighbours, naturally persons have 2 rib hump ,but due to scoliosis they are of disproptionate lenghts, we fit a plane such that is normal to the rib-humps and call it the rib-hump plane and with help of that we compute different parameters.
+<img width="307" height="353" alt="image" src="https://github.com/user-attachments/assets/b1de071e-956c-4947-bcec-3f7724ebcf57" />
+
+[Screencast from 17-12-25 08_19_50 PM IST.webm](https://github.com/user-attachments/assets/642424b0-de84-476d-bc56-2c14337f121a)
+Video showing the visualization of how rib hump angle computation is done 
+<div align="center">
+      <img width="813" height="498" alt="image" src="https://github.com/user-attachments/assets/40efbdac-8511-41c9-bcb9-e33784686993" />
+      <em>Parameters extracted from rib-hump plane.</em>
+    </div>
+
+***AIX-3: Head and pelvis center offset:***
+<img width="855" height="506" alt="image" src="https://github.com/user-attachments/assets/5b974007-91c8-485b-b79d-b5d84b198f41" />
+
+Here is the video demonstration of the alogrithm: 
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=6BdOaebS250">
+    <img src="https://img.youtube.com/vi/6BdOaebS250/maxresdefault.jpg" alt="Demo Video" width="600">
+  </a>
+   <em> Click on the thumbnail to watch on youtube</em>
+</div>
 ---
+
+
+## Future-phase project: 
+
+If anyone going through the repo is keen, we can use these extracted parameters and do large scale data-collection on scoliosis and non-scoliosis patients and can fit ML model on that to identify scoliosis. I never really got the chance to work ahead, because my task of the project was till this. Rest of the project was transferred to Stanford. If someone wants any explaination over any part, feel free to comment or mail me. 
 
 ## 📂 Repository Structure
 
