@@ -1,4 +1,6 @@
-<img width="877" height="455" alt="image" src="https://github.com/user-attachments/assets/20544f13-93e9-466c-934b-f2d5c28b0454" /># 3D Scoliosis Diagnosis Pipeline
+
+
+# 3D Scoliosis Diagnosis Pipeline
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
@@ -7,10 +9,11 @@
 Welcome to the **Scoliosis Project** repository. This project aims to provide a robust, non-invasive, deep learning and computer vision assisted screening and diagnosis pipeline for Scoliosis using 3D point cloud and mesh processing.
 
 By leveraging a combination of Video-to-3D models (like VGGT) and specialized geometric processing (Meshlab algorithms, Point Cloud denoising, and alignment), this pipeline can extract critical metrics such as the **Hump Angle** and **Spine AIX** from bareback video inputs.
-
+<img width="877" height="455" alt="image" src="https://github.com/user-attachments/assets/20544f13-93e9-466c-934b-f2d5c28b0454" />
 ---
 
 ## 🌟 Key Features
+<img width="881" height="457" alt="image" src="https://github.com/user-attachments/assets/b49db86c-4647-46ba-a0df-a3f01369901f" />
 
 1. **Video to Point Cloud Conversion**: Automated extraction of frames from patient videos, pre-processing, and passing through a VGGT model to construct 3D Point Clouds.
 2. **Mesh Generation & Denoising**: Robust SOR/ROR denoising techniques applied on far meshes, and Meshlab-based reconstruction for detailed 3D surface meshes.
